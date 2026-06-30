@@ -1,0 +1,220 @@
+public final class com/axguard/sdk/BuildConfig {
+	public static final field BUILD_TYPE Ljava/lang/String;
+	public static final field DEBUG Z
+	public static final field LIBRARY_PACKAGE_NAME Ljava/lang/String;
+	public static final field OBFS_KEY I
+	public fun <init> ()V
+}
+
+public abstract interface class com/axguard/sdk/api/AxGuardSdk {
+	public static final field Companion Lcom/axguard/sdk/api/AxGuardSdk$Companion;
+	public abstract fun runChecks (Lcom/axguard/sdk/api/models/SecurityCheckConfig;)Lcom/axguard/sdk/api/models/AxGuardReport;
+}
+
+public final class com/axguard/sdk/api/AxGuardSdk$Companion {
+	public final fun getInstance ()Lcom/axguard/sdk/api/AxGuardSdk;
+}
+
+public abstract interface class com/axguard/sdk/api/models/AxGuardReport {
+	public abstract fun getResults ()Ljava/util/List;
+}
+
+public abstract interface class com/axguard/sdk/api/models/SecurityCheckConfig {
+	public abstract fun getCheckIds ()Ljava/util/Set;
+	public abstract fun getContext ()Landroid/content/Context;
+	public abstract fun getTimeoutMs ()J
+}
+
+public final class com/axguard/sdk/api/models/SecurityCheckConfigKt {
+	public static final field DEFAULT_TIMEOUT_MS J
+	public static final fun SecurityCheckConfig (Landroid/content/Context;Ljava/util/Set;J)Lcom/axguard/sdk/api/models/SecurityCheckConfig;
+	public static synthetic fun SecurityCheckConfig$default (Landroid/content/Context;Ljava/util/Set;JILjava/lang/Object;)Lcom/axguard/sdk/api/models/SecurityCheckConfig;
+}
+
+public abstract interface annotation class com/axguard/sdk/api/models/SecurityCheckId : java/lang/annotation/Annotation {
+	public static final field ADB_OVER_NETWORK I
+	public static final field APP_INTEGRITY I
+	public static final field Companion Lcom/axguard/sdk/api/models/SecurityCheckId$Companion;
+	public static final field DEBUGGER I
+	public static final field DEVELOPER_OPTIONS I
+	public static final field EMULATOR I
+	public static final field ENCRYPTION I
+	public static final field HOOK I
+	public static final field PROXY I
+	public static final field ROOT I
+	public static final field SELINUX I
+	public static final field USER_CA I
+	public static final field VERIFIED_BOOT I
+	public static final field VPN I
+}
+
+public final class com/axguard/sdk/api/models/SecurityCheckId$Companion {
+	public static final field ADB_OVER_NETWORK I
+	public static final field APP_INTEGRITY I
+	public static final field DEBUGGER I
+	public static final field DEVELOPER_OPTIONS I
+	public static final field EMULATOR I
+	public static final field ENCRYPTION I
+	public static final field HOOK I
+	public static final field PROXY I
+	public static final field ROOT I
+	public static final field SELINUX I
+	public static final field USER_CA I
+	public static final field VERIFIED_BOOT I
+	public static final field VPN I
+}
+
+public abstract interface class com/axguard/sdk/api/models/threats/AdbOverNetworkThreat : com/axguard/sdk/api/models/threats/SecurityCheckResult$ThreatDetected {
+	public abstract fun getPortReachable ()Z
+	public abstract fun getTcpPort ()Ljava/lang/String;
+	public abstract fun getTcpPortSet ()Z
+	public abstract fun getWifiAdbEnabled ()Z
+}
+
+public abstract interface class com/axguard/sdk/api/models/threats/AppIntegrityThreat : com/axguard/sdk/api/models/threats/SecurityCheckResult$ThreatDetected {
+	public abstract fun getActualFingerprints ()Ljava/util/List;
+}
+
+public abstract interface class com/axguard/sdk/api/models/threats/DebuggerThreat : com/axguard/sdk/api/models/threats/SecurityCheckResult$ThreatDetected {
+	public abstract fun getAnyThreadTraced ()Z
+	public abstract fun getAppDebuggable ()Z
+	public abstract fun getJdwpConnected ()Z
+	public abstract fun getNativeAttached ()Z
+	public abstract fun getWaitingForDebugger ()Z
+}
+
+public abstract interface class com/axguard/sdk/api/models/threats/DeveloperOptionsThreat : com/axguard/sdk/api/models/threats/SecurityCheckResult$ThreatDetected {
+	public abstract fun getAdbEnabled ()Z
+	public abstract fun getDeveloperOptionsEnabled ()Z
+}
+
+public abstract interface class com/axguard/sdk/api/models/threats/EmulatorThreat : com/axguard/sdk/api/models/threats/SecurityCheckResult$ThreatDetected {
+	public abstract fun getEmulatorHardware ()Z
+	public abstract fun getEmulatorModel ()Z
+	public abstract fun getEmulatorProduct ()Z
+	public abstract fun getGenericBrand ()Z
+	public abstract fun getGenericFingerprint ()Z
+	public abstract fun getGenymotionManufacturer ()Z
+	public abstract fun getGoldfishTtyDriver ()Z
+	public abstract fun getNoAccelerometer ()Z
+	public abstract fun getQemuDeviceFile ()Z
+	public abstract fun getQemuProperties ()Z
+	public abstract fun getZeroBatteryTemp ()Z
+}
+
+public abstract interface class com/axguard/sdk/api/models/threats/EncryptionThreat : com/axguard/sdk/api/models/threats/SecurityCheckResult$ThreatDetected {
+	public abstract fun getDefaultKeyEncryption ()Z
+	public abstract fun getNoSecureLockScreen ()Z
+	public abstract fun getStorageEncryptionInactive ()Z
+}
+
+public abstract interface class com/axguard/sdk/api/models/threats/HookThreat : com/axguard/sdk/api/models/threats/SecurityCheckResult$ThreatDetected {
+	public abstract fun getFridaServerOnDisk ()Z
+	public abstract fun getFridaThreadDetected ()Z
+	public abstract fun getStandardFridaPortOpen ()Z
+	public abstract fun getSuspiciousLibraryInMaps ()Z
+	public abstract fun getXposedBridgeLoaded ()Z
+}
+
+public abstract interface class com/axguard/sdk/api/models/threats/ProxyThreat : com/axguard/sdk/api/models/threats/SecurityCheckResult$ThreatDetected {
+	public abstract fun getHttp ()Lcom/axguard/sdk/api/models/threats/ProxyThreat$HttpProxy;
+	public abstract fun getPac ()Lcom/axguard/sdk/api/models/threats/ProxyThreat$PacProxy;
+	public abstract fun getPerNetworkProxyPresent ()Z
+	public abstract fun getProxySystemPropertySet ()Z
+}
+
+public abstract interface class com/axguard/sdk/api/models/threats/ProxyThreat$HttpProxy {
+	public abstract fun getHost ()Ljava/lang/String;
+	public abstract fun getPort ()I
+}
+
+public abstract interface class com/axguard/sdk/api/models/threats/ProxyThreat$PacProxy {
+	public abstract fun getScriptUrl ()Ljava/lang/String;
+}
+
+public abstract interface class com/axguard/sdk/api/models/threats/RootThreat : com/axguard/sdk/api/models/threats/SecurityCheckResult$ThreatDetected {
+	public abstract fun getAdbRootProp ()Z
+	public abstract fun getInsecureBuildProps ()Z
+	public abstract fun getKernelSuDetected ()Z
+	public abstract fun getMagiskDetected ()Z
+	public abstract fun getSuBinaryFound ()Z
+	public abstract fun getSuCommandAvailable ()Z
+	public abstract fun getSystemPartitionRw ()Z
+	public abstract fun getTestKeysDetected ()Z
+}
+
+public abstract interface annotation class com/axguard/sdk/api/models/threats/SecurityCheckErrorKind : java/lang/annotation/Annotation {
+	public static final field Companion Lcom/axguard/sdk/api/models/threats/SecurityCheckErrorKind$Companion;
+	public static final field INTERNAL I
+	public static final field INTERRUPTED I
+	public static final field IO I
+	public static final field SECURITY I
+}
+
+public final class com/axguard/sdk/api/models/threats/SecurityCheckErrorKind$Companion {
+	public static final field INTERNAL I
+	public static final field INTERRUPTED I
+	public static final field IO I
+	public static final field SECURITY I
+}
+
+public abstract interface class com/axguard/sdk/api/models/threats/SecurityCheckResult {
+	public abstract fun getCheckId ()I
+}
+
+public abstract interface class com/axguard/sdk/api/models/threats/SecurityCheckResult$Secure : com/axguard/sdk/api/models/threats/SecurityCheckResult {
+}
+
+public abstract interface class com/axguard/sdk/api/models/threats/SecurityCheckResult$ThreatDetected : com/axguard/sdk/api/models/threats/SecurityCheckResult {
+}
+
+public abstract interface class com/axguard/sdk/api/models/threats/SecurityCheckResult$Unavailable : com/axguard/sdk/api/models/threats/SecurityCheckResult {
+	public abstract fun getReason ()Lcom/axguard/sdk/api/models/threats/SecurityCheckResult$Unavailable$Reason;
+}
+
+public abstract interface class com/axguard/sdk/api/models/threats/SecurityCheckResult$Unavailable$Reason {
+}
+
+public abstract interface class com/axguard/sdk/api/models/threats/SecurityCheckResult$Unavailable$Reason$Error : com/axguard/sdk/api/models/threats/SecurityCheckResult$Unavailable$Reason {
+	public abstract fun getKind ()I
+}
+
+public final class com/axguard/sdk/api/models/threats/SecurityCheckResult$Unavailable$Reason$Timeout : com/axguard/sdk/api/models/threats/SecurityCheckResult$Unavailable$Reason {
+	public static final field INSTANCE Lcom/axguard/sdk/api/models/threats/SecurityCheckResult$Unavailable$Reason$Timeout;
+}
+
+public final class com/axguard/sdk/api/models/threats/SecurityCheckResult$Unavailable$Reason$Unsupported : com/axguard/sdk/api/models/threats/SecurityCheckResult$Unavailable$Reason {
+	public static final field INSTANCE Lcom/axguard/sdk/api/models/threats/SecurityCheckResult$Unavailable$Reason$Unsupported;
+}
+
+public abstract interface class com/axguard/sdk/api/models/threats/SelinuxThreat : com/axguard/sdk/api/models/threats/SecurityCheckResult$ThreatDetected {
+}
+
+public abstract interface class com/axguard/sdk/api/models/threats/UserCaThreat : com/axguard/sdk/api/models/threats/SecurityCheckResult$ThreatDetected {
+	public abstract fun getSubjects ()Ljava/util/List;
+	public abstract fun getSystemCaCount ()I
+}
+
+public abstract interface class com/axguard/sdk/api/models/threats/VerifiedBootThreat : com/axguard/sdk/api/models/threats/SecurityCheckResult$ThreatDetected {
+	public abstract fun getState ()Lcom/axguard/sdk/api/models/threats/VerifiedBootThreat$State;
+}
+
+public abstract interface class com/axguard/sdk/api/models/threats/VerifiedBootThreat$State {
+}
+
+public final class com/axguard/sdk/api/models/threats/VerifiedBootThreat$State$Orange : com/axguard/sdk/api/models/threats/VerifiedBootThreat$State {
+	public static final field INSTANCE Lcom/axguard/sdk/api/models/threats/VerifiedBootThreat$State$Orange;
+}
+
+public final class com/axguard/sdk/api/models/threats/VerifiedBootThreat$State$Red : com/axguard/sdk/api/models/threats/VerifiedBootThreat$State {
+	public static final field INSTANCE Lcom/axguard/sdk/api/models/threats/VerifiedBootThreat$State$Red;
+}
+
+public final class com/axguard/sdk/api/models/threats/VerifiedBootThreat$State$Yellow : com/axguard/sdk/api/models/threats/VerifiedBootThreat$State {
+	public static final field INSTANCE Lcom/axguard/sdk/api/models/threats/VerifiedBootThreat$State$Yellow;
+}
+
+public abstract interface class com/axguard/sdk/api/models/threats/VpnThreat : com/axguard/sdk/api/models/threats/SecurityCheckResult$ThreatDetected {
+	public abstract fun getActiveNetworkCount ()I
+}
+
