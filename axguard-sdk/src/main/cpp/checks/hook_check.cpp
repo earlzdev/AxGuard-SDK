@@ -3,6 +3,7 @@
 #include <string.h>
 
 #include "../obfs.h"
+#include "../common/jni_targets.h"
 #include "../common/syscall_io.h"
 #include "../common/task_iter.h"
 #include "../common/str_util.h"
@@ -73,9 +74,7 @@ static bool frida_thread_present() {
     return found;
 }
 
-extern "C" JNIEXPORT jint JNICALL
-Java_com_axguard_sdk_internal_checks_HookCheck_nativeProbe(
-        JNIEnv *, jobject) {
+jint axg::hook_probe(JNIEnv *, jobject) {
     int flags = 0;
 
     bool suspicious = false;

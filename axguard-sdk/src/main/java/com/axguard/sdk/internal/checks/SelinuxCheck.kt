@@ -38,7 +38,7 @@ internal class SelinuxCheck : SecurityCheck {
         try {
             val clazz = Class.forName("android.os.SELinux")
             val enforced = clazz.getMethod("isSELinuxEnforced").invoke(null) as? Boolean
-            if (enforced != null) return if (enforced) SecureImpl(id) else SelinuxThreatImpl
+            if (enforced == true) return SecureImpl(id)
         } catch (e: Exception) {
             AxLog.w(TAG, "SELinux reflection failed, falling back to sysfs", e)
         }

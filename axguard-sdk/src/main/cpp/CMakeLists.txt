@@ -5,13 +5,14 @@ project(axguard_integrity)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# AXGUARD_OBFS_KEY is the XOR key shared with the Kotlin decoder in Obfs.kt.
-# Fixed at 0x5A when not passed; build.gradle.kts overrides.
+# Keystream seed shared with Obfs.kt. Fallback for standalone CMake builds only;
+# the Gradle build passes AxGuardBuild.OBFS_KEY. Keep in sync.
 if(NOT DEFINED AXGUARD_OBFS_KEY)
-    set(AXGUARD_OBFS_KEY 0x5A)
+    set(AXGUARD_OBFS_KEY 0x6D7A3F15)
 endif()
 
 add_library(axguard-integrity SHARED
+    jni_onload.cpp
     integrity_check.cpp
     common/syscall_io.cpp
     common/task_iter.cpp
@@ -27,10 +28,9 @@ target_compile_definitions(axguard-integrity PRIVATE
 )
 
 # Hardening flags.
-# -fvisibility=hidden + -fvisibility-inlines-hidden: only JNIEXPORT-tagged
-#   entry points are exported. `nm libaxguard-integrity.so` after this shows
-#   the six JNI functions and nothing else — helpers stay internal, giving a
-#   Frida attacker far fewer symbols to hook.
+# -fvisibility=hidden + -fvisibility-inlines-hidden: only JNIEXPORT entry points
+#   are exported. Probes are bound via RegisterNatives (jni_onload.cpp), so the
+#   .so exports only JNI_OnLoad — no Java_… symbols for an attacker to locate.
 # -fstack-protector-strong: canary-based buffer overflow detection.
 # -Wall/-Wextra: turn on warnings, address them incrementally. -Werror is
 #   deliberately NOT enabled yet; warnings should be triaged first.
@@ -50,9 +50,8 @@ target_compile_options(axguard-integrity PRIVATE
 # -Wl,-z,relro + -Wl,-z,now: full RELRO — GOT is read-only after linking,
 #   closes the "overwrite GOT to hook libc" attack class.
 # -Wl,--as-needed: drop unused DT_NEEDED entries.
-# --gc-sections + --strip-all (release-only): remove dead sections and strip
-#   symbol/debug info from the shipped .so. Combined with visibility hiding,
-#   the release library exposes only the JNI entry-point names.
+# --gc-sections + --strip-all (release-only): drop dead sections and strip
+#   symbol/debug info. With visibility hiding, the release .so exports only JNI_OnLoad.
 target_link_options(axguard-integrity PRIVATE
     -Wl,-z,relro
     -Wl,-z,now

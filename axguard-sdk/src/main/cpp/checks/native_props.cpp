@@ -1,11 +1,11 @@
 #include <jni.h>
 #include <sys/system_properties.h>
 
+#include "../common/jni_targets.h"
+
 // __system_property_get is the real accessor libc exposes: no reflection, no
 // Binder round-trip, and harder to intercept than the Java SystemProperties path.
-extern "C" JNIEXPORT jstring JNICALL
-Java_com_axguard_sdk_internal_utils_NativeProps_nativeGet(
-        JNIEnv *env, jobject, jstring j_key) {
+jstring axg::native_prop_get(JNIEnv *env, jobject, jstring j_key) {
     const char *key = env->GetStringUTFChars(j_key, nullptr);
     if (key == nullptr) return nullptr;
 

@@ -31,29 +31,20 @@ internal class AppIntegrityCheck(
             )
         }
 
-        // The expected fingerprint is injected by the AxGuard Gradle plugin at the
-        // consumer's build (obfuscated). Absent means integrity checking wasn't
-        // configured, so the check is Unsupported rather than a failure.
+        // Fail closed: a missing reference fingerprint means a stripped meta-data
+        // or an unconfigured check, both threats rather than a silent N/A.
         val expectedObfuscated = readExpectedFingerprint()
-            ?: return UnavailableImpl(
-                checkId = id,
-                reason = Reason.Unsupported,
-            )
+            ?: return AppIntegrityThreatImpl(actualFingerprints = emptyList())
 
         val fingerprints: List<String> = computeSigningFingerprints()
         if (fingerprints.isEmpty()) {
-            return UnavailableImpl(
-                checkId = id,
-                reason = ErrorReasonImpl(SecurityCheckErrorKind.IO),
-            )
+            return AppIntegrityThreatImpl(actualFingerprints = emptyList())
         }
 
-        // Legacy multi-signer APKs pass when any current signer matches. Signing
-        // history is deliberately not consulted: key rotation requires updating
-        // the fingerprint configured in the plugin DSL.
+        // Any current signer matching passes; signing history is not consulted.
         val match = try {
             fingerprints.any { nativeCheckFingerprint(expectedObfuscated, it) }
-        } catch (e: UnsatisfiedLinkError) {
+        } catch (_: UnsatisfiedLinkError) {
             return UnavailableImpl(
                 checkId = id,
                 reason = ErrorReasonImpl(SecurityCheckErrorKind.INTERNAL),
@@ -67,10 +58,8 @@ internal class AppIntegrityCheck(
         }
     }
 
-    // Reads the obfuscated expected fingerprint from the manifest <meta-data> the
-    // AxGuard Gradle plugin injected into the consumer app. Base64 is only
-    // transport; the value stays XOR-obfuscated and is decoded in native, so no
-    // plaintext fingerprint ever exists in the Java layer.
+    // Reads the obfuscated expected fingerprint from the injected manifest
+    // <meta-data>. Base64 is transport only; it stays obfuscated until native.
     private fun readExpectedFingerprint(): ByteArray? {
         return try {
             val appInfo = context.packageManager.getApplicationInfo(

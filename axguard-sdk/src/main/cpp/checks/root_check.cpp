@@ -3,6 +3,7 @@
 #include <string.h>
 
 #include "../obfs.h"
+#include "../common/jni_targets.h"
 #include "../common/syscall_io.h"
 
 // Root detection. Returns a bitset: bit0 su binary at a known path, bit1 su on
@@ -93,9 +94,7 @@ static bool mounts_line_cb(const char *line, void *c) {
     return false;
 }
 
-extern "C" JNIEXPORT jint JNICALL
-Java_com_axguard_sdk_internal_checks_RootCheck_nativeProbe(
-        JNIEnv *, jobject) {
+jint axg::root_probe(JNIEnv *, jobject) {
     int flags = 0;
 
     for (int i = 0; ; ++i) {

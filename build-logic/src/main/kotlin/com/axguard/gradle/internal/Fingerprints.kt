@@ -18,19 +18,30 @@ internal fun normalizeFingerprint(raw: String): String {
 }
 
 /**
- * XOR-obfuscates [fingerprint] and Base64-wraps it for transport in the manifest
- * meta-data. Uses the shared per-byte key schedule (`(key + i) & 0xFF`); the SDK
- * reverses it in native, so no plaintext fingerprint reaches the app's Java layer.
- *
- * @param fingerprint the normalized fingerprint to encode.
- * @param key the XOR base key; defaults to [AxGuardBuild.OBFS_KEY], the value the
- *   SDK decodes with.
- * @return the obfuscated bytes, Base64-encoded without line wrapping.
+ * Obfuscates [fingerprint] with the shared keystream scheme and Base64-wraps it for
+ * the manifest meta-data; the SDK reverses it in native (integrity_check.cpp). Must
+ * stay byte-identical to cpp/obfs.h, the Kotlin `Obfs` object, and tools/gen_obfs.py
+ * (uint32 math reproduced with masked `Int`s). [key] defaults to [AxGuardBuild.OBFS_KEY].
  */
 internal fun obfuscateToBase64(fingerprint: String, key: Int = AxGuardBuild.OBFS_KEY): String {
     val bytes = fingerprint.toByteArray(Charsets.UTF_8)
-    val out = ByteArray(bytes.size) { i ->
-        (bytes[i].toInt() xor ((key + i) and 0xFF)).toByte()
+
+    var seed = key xor 0x9E3779B9.toInt()
+    seed *= 0x85EBCA6B.toInt()
+    seed = seed xor (seed ushr 13)
+    seed = seed or 1
+
+    var state = seed
+    var prev = seed and 0xFF
+    val out = ByteArray(bytes.size)
+    for (i in bytes.indices) {
+        state = state xor (state shl 13)
+        state = state xor (state ushr 17)
+        state = state xor (state shl 5)
+        val k = (state xor (state ushr 8) xor (state ushr 16) xor (state ushr 24)) and 0xFF
+        val c = (bytes[i].toInt() and 0xFF) xor k xor (i and 0xFF) xor prev
+        out[i] = c.toByte()
+        prev = c and 0xFF
     }
     return Base64.getEncoder().encodeToString(out)
 }

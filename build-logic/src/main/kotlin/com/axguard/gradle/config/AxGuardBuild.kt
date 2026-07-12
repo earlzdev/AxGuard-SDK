@@ -17,12 +17,12 @@ object AxGuardBuild {
     const val JAVA_VERSION = 11
 
     /**
-     * XOR key shared by the native OBFS() macro, the Kotlin Obfs decoder, and this plugin.
+     * Keystream seed shared by cpp/obfs.h, the Kotlin Obfs decoder, this plugin's
+     * encoder, and tools/gen_obfs.py — regenerate all four when it changes. Kept
+     * below 0x8000_0000 to round-trip through a Java `int` BuildConfig field.
      */
-    const val OBFS_KEY = 0x5A
+    const val OBFS_KEY = 0x6D7A3F15
 
-    /**
-     * `0x5A`-style hex literal used in generated BuildConfig / CMake defines.
-     */
+    /** Hex literal for generated BuildConfig / CMake defines. */
     val obfsKeyHex: String get() = "0x${OBFS_KEY.toString(16).uppercase()}"
 }

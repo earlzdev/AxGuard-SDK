@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "../common/jni_targets.h"
 #include "../common/syscall_io.h"
 #include "../common/task_iter.h"
 
@@ -37,9 +38,7 @@ static bool debugger_task_cb(const char *tid, void *ctx_) {
     return (*flags & 0x3) == 0x3;
 }
 
-extern "C" JNIEXPORT jint JNICALL
-Java_com_axguard_sdk_internal_checks_DebuggerCheck_nativeProbe(
-        JNIEnv *, jobject) {
+jint axg::debugger_probe(JNIEnv *, jobject) {
     int flags = 0;
     if (!axguard::for_each_task(debugger_task_cb, &flags)) return -1;
     return flags;

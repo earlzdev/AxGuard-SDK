@@ -3,11 +3,8 @@
 #include <stddef.h>
 #include <stdint.h>
 
-// Shared with the Kotlin decoder and the plugin that obfuscates the injected
-// fingerprint; overridden by build.gradle.kts via -DAXGUARD_OBFS_KEY.
-#ifndef AXGUARD_OBFS_KEY
-#define AXGUARD_OBFS_KEY 0x5A
-#endif
+#include "obfs.h"
+#include "common/jni_targets.h"
 
 // A SHA-256 fingerprint is 64 hex chars; leave headroom for sloppy input.
 #define FINGERPRINT_BUF_SIZE 129
@@ -45,13 +42,9 @@ static bool normalize_fingerprint(const char* in, char* out, size_t out_size) {
     return true;
 }
 
-// The expected fingerprint is supplied by the consumer's build (injected by the
-// AxGuard Gradle plugin) — a prebuilt AAR can't know the consumer's signing cert.
-// It arrives still XOR-obfuscated: the decode, normalize, and constant-time
-// compare all happen here, so the plaintext fingerprint never exists in the Java
-// layer where a hook could read or spoof it.
-extern "C" JNIEXPORT jboolean JNICALL
-Java_com_axguard_sdk_internal_checks_AppIntegrityCheck_nativeCheckFingerprint(
+// Decode, normalize, and constant-time compare stay native so the plaintext
+// fingerprint never reaches Java. Bound via RegisterNatives (jni_onload.cpp).
+jboolean axg::integrity_check_fp(
         JNIEnv* env, jobject /* this */, jbyteArray expectedObfuscated, jstring actualFingerprint) {
 
     jsize n = env->GetArrayLength(expectedObfuscated);
@@ -62,12 +55,8 @@ Java_com_axguard_sdk_internal_checks_AppIntegrityCheck_nativeCheckFingerprint(
     jbyte* obf = env->GetByteArrayElements(expectedObfuscated, nullptr);
     if (obf == nullptr) return JNI_FALSE;
 
-    // XOR-decode with the same key schedule as Kotlin Obfs / the OBFS() macro.
     char expected_plain[FINGERPRINT_BUF_SIZE];
-    for (jsize i = 0; i < n; ++i) {
-        expected_plain[i] = static_cast<char>(
-                static_cast<uint8_t>(obf[i]) ^ static_cast<uint8_t>((AXGUARD_OBFS_KEY + i) & 0xFF));
-    }
+    axg::obfs_decode(reinterpret_cast<const uint8_t*>(obf), expected_plain, static_cast<size_t>(n));
     expected_plain[n] = '\0';
     env->ReleaseByteArrayElements(expectedObfuscated, obf, JNI_ABORT);
 
