@@ -49,7 +49,7 @@ Apply the Gradle plugin — it pulls in the runtime AAR for you and enables the 
 ```kotlin
 // app/build.gradle.kts
 plugins {
-    id("io.github.earlzdev.axguard") version "0.1.1"
+    id("io.github.earlzdev.axguard") version "0.1.2"
 }
 
 axguard {
