@@ -9,7 +9,7 @@ package com.axguard.gradle.config
 object AxGuardBuild {
 
     const val GROUP = "io.github.earlzdev"
-    const val VERSION = "0.1.2"
+    const val VERSION = "0.1.3"
 
     const val COMPILE_SDK = 34
     const val MIN_SDK = 26
