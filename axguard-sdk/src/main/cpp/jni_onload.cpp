@@ -10,6 +10,10 @@ const JNINativeMethod kAppIntegrity[] = {
     {"nativeCheckFingerprint", "([BLjava/lang/String;)Z",
      reinterpret_cast<void *>(&axg::integrity_check_fp)},
 };
+const JNINativeMethod kDexIntegrity[] = {
+    {"nativeCheckHash", "([BLjava/lang/String;)Z",
+     reinterpret_cast<void *>(&axg::integrity_check_fp)},
+};
 const JNINativeMethod kRoot[] = {
     {"nativeProbe", "()I", reinterpret_cast<void *>(&axg::root_probe)},
 };
@@ -51,6 +55,7 @@ extern "C" JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, void * /* reserved */) 
     }
 
     register_class(env, "com/axguard/sdk/internal/checks/AppIntegrityCheck", kAppIntegrity, 1);
+    register_class(env, "com/axguard/sdk/internal/checks/DexIntegrityCheck", kDexIntegrity, 1);
     register_class(env, "com/axguard/sdk/internal/checks/RootCheck", kRoot, 1);
     register_class(env, "com/axguard/sdk/internal/checks/HookCheck", kHook, 1);
     register_class(env, "com/axguard/sdk/internal/checks/DebuggerCheck", kDebugger, 1);

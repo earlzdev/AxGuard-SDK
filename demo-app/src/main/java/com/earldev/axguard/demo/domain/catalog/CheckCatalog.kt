@@ -155,6 +155,19 @@ object CheckCatalog {
                 "rather than blocking on VPN presence alone.",
         ),
         CheckMetadata(
+            id = SecurityCheckId.DEX_INTEGRITY,
+            title = "DEX Integrity",
+            category = CheckCategory.TAMPERING,
+            tagline = "Compiled code verification",
+            whatItChecks = "Re-hashes the APK's classes*.dex files on disk and compares the " +
+                "result against the hash recorded when the app was built.",
+            whyItMatters = "A mismatch means the app's compiled code was altered after the " +
+                "build — patched logic, injected code, or a repackaged APK — even if " +
+                "signature checks were spoofed.",
+            recommendation = "Stop trusting the app's own logic when its code hash doesn't " +
+                "match; require reinstallation from an official store.",
+        ),
+        CheckMetadata(
             id = SecurityCheckId.PROXY,
             title = "HTTP Proxy",
             category = CheckCategory.NETWORK,

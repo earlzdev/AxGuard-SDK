@@ -5,6 +5,7 @@ import androidx.compose.material.icons.filled.AdminPanelSettings
 import androidx.compose.material.icons.filled.BugReport
 import androidx.compose.material.icons.filled.Cable
 import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Code
 import androidx.compose.material.icons.filled.DeveloperMode
 import androidx.compose.material.icons.filled.Extension
 import androidx.compose.material.icons.filled.Fingerprint
@@ -39,6 +40,7 @@ fun checkIcon(id: Int): ImageVector = when (id) {
     SecurityCheckId.USER_CA -> Icons.Filled.Policy
     SecurityCheckId.VPN -> Icons.Filled.VpnKey
     SecurityCheckId.PROXY -> Icons.Filled.Router
+    SecurityCheckId.DEX_INTEGRITY -> Icons.Filled.Code
     else -> Icons.Filled.Shield
 }
 

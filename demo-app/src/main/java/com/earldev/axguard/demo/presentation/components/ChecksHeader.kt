@@ -20,6 +20,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.earldev.axguard.demo.R
+import com.earldev.axguard.demo.domain.catalog.CheckCatalog
 import com.earldev.axguard.demo.presentation.theme.statusColors
 
 /** Header shown before the first scan: invites the user to run the checks. */
@@ -45,8 +46,8 @@ fun IntroHeader(modifier: Modifier = Modifier) {
             }
         },
         title = "Assess this device",
-        subtitle = "13 on-device security checks are ready. Run them to evaluate this " +
-            "device's integrity.",
+        subtitle = "${CheckCatalog.all.size} on-device security checks are ready. Run them " +
+            "to evaluate this device's integrity.",
     )
 }
 

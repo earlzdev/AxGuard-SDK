@@ -5,6 +5,7 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.util.Base64
 import com.axguard.sdk.api.models.SecurityCheckId
+import com.axguard.sdk.api.models.threats.AppIntegrityThreat
 import com.axguard.sdk.api.models.threats.SecurityCheckErrorKind
 import com.axguard.sdk.api.models.threats.SecurityCheckResult
 import com.axguard.sdk.api.models.threats.SecurityCheckResult.Unavailable.Reason
@@ -34,11 +35,11 @@ internal class AppIntegrityCheck(
         // Fail closed: a missing reference fingerprint means a stripped meta-data
         // or an unconfigured check, both threats rather than a silent N/A.
         val expectedObfuscated = readExpectedFingerprint()
-            ?: return AppIntegrityThreatImpl(actualFingerprints = emptyList())
+            ?: return AppIntegrityThreatImpl(AppIntegrityThreat.Reason.BaselineMissing)
 
         val fingerprints: List<String> = computeSigningFingerprints()
         if (fingerprints.isEmpty()) {
-            return AppIntegrityThreatImpl(actualFingerprints = emptyList())
+            return AppIntegrityThreatImpl(AppIntegrityThreat.Reason.SignerMismatch)
         }
 
         // Any current signer matching passes; signing history is not consulted.
@@ -54,7 +55,7 @@ internal class AppIntegrityCheck(
         return if (match) {
             SecureImpl(checkId = id)
         } else {
-            AppIntegrityThreatImpl(actualFingerprints = fingerprints)
+            AppIntegrityThreatImpl(AppIntegrityThreat.Reason.SignerMismatch)
         }
     }
 

@@ -23,6 +23,11 @@ class AxGuardGradlePlugin : Plugin<Project> {
             certFingerprint.convention(
                 project.providers.gradleProperty("axguard.certFingerprint")
             )
+            dexIntegrity.convention(
+                project.providers.gradleProperty("axguard.dexIntegrity")
+                    .map { it.toBoolean() }
+                    .orElse(false)
+            )
         }
 
         project.pluginManager.withPlugin("com.android.application") {
@@ -58,6 +63,10 @@ class AxGuardGradlePlugin : Plugin<Project> {
                         taskOutput = AxGuardConfigurationTask::updatedManifest,
                     )
                     .toTransform(SingleArtifact.MERGED_MANIFEST)
+
+                if (extension.dexIntegrity.getOrElse(false)) {
+                    wireDexIntegrity(project, variant, capitalized)
+                }
             }
         }
     }

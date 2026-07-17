@@ -19,6 +19,7 @@ import androidx.annotation.IntDef
     SecurityCheckId.USER_CA,
     SecurityCheckId.VPN,
     SecurityCheckId.PROXY,
+    SecurityCheckId.DEX_INTEGRITY,
 )
 @Target(
     AnnotationTarget.TYPE,
@@ -68,6 +69,9 @@ public annotation class SecurityCheckId {
 
         /**
          * APK signing-certificate integrity.
+         *
+         * Requires the AxGuard Gradle plugin to bake the expected fingerprint
+         * into the APK; without it the check reports a threat (fail closed).
          */
         public const val APP_INTEGRITY: Int = 7
 
@@ -95,5 +99,14 @@ public annotation class SecurityCheckId {
          * HTTP proxy configured.
          */
         public const val PROXY: Int = 12
+
+        /**
+         * DEX code integrity (`classes*.dex` hash vs. build-time expectation).
+         *
+         * Requires the AxGuard Gradle plugin's `axguard { dexIntegrity }` flag to
+         * bake the expected hash into the APK; without it the check reports a
+         * threat (fail closed).
+         */
+        public const val DEX_INTEGRITY: Int = 13
     }
 }

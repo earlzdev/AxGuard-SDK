@@ -5,6 +5,7 @@ import com.axguard.sdk.api.models.SecurityCheckId
 import com.axguard.sdk.internal.checks.AdbOverNetworkCheck
 import com.axguard.sdk.internal.checks.AppIntegrityCheck
 import com.axguard.sdk.internal.checks.DebuggerCheck
+import com.axguard.sdk.internal.checks.DexIntegrityCheck
 import com.axguard.sdk.internal.checks.DeveloperOptionsCheck
 import com.axguard.sdk.internal.checks.EmulatorCheck
 import com.axguard.sdk.internal.checks.EncryptionCheck
@@ -40,6 +41,7 @@ internal class SecurityChecksFactory {
             SecurityCheckId.USER_CA -> UserCaCheck()
             SecurityCheckId.VPN -> VpnCheck(context)
             SecurityCheckId.PROXY -> ProxyCheck(context)
+            SecurityCheckId.DEX_INTEGRITY -> DexIntegrityCheck(context)
             else -> throw IllegalArgumentException("Unknown security check id: $id")
         }
     }
@@ -59,6 +61,7 @@ internal class SecurityChecksFactory {
             SecurityCheckId.USER_CA,
             SecurityCheckId.VPN,
             SecurityCheckId.PROXY,
+            SecurityCheckId.DEX_INTEGRITY,
         )
     }
 }

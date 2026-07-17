@@ -59,6 +59,7 @@ android {
 
 axguard {
     certFingerprint = "1aab902551a3d771070d7f7b37af41f0c8fb6171c698c98a1ab12c4f6d8b4996"
+    dexIntegrity = true
 }
 
 dependencies {

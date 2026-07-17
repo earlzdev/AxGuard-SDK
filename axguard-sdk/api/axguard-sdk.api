@@ -37,6 +37,7 @@ public abstract interface annotation class com/axguard/sdk/api/models/SecurityCh
 	public static final field Companion Lcom/axguard/sdk/api/models/SecurityCheckId$Companion;
 	public static final field DEBUGGER I
 	public static final field DEVELOPER_OPTIONS I
+	public static final field DEX_INTEGRITY I
 	public static final field EMULATOR I
 	public static final field ENCRYPTION I
 	public static final field HOOK I
@@ -53,6 +54,7 @@ public final class com/axguard/sdk/api/models/SecurityCheckId$Companion {
 	public static final field APP_INTEGRITY I
 	public static final field DEBUGGER I
 	public static final field DEVELOPER_OPTIONS I
+	public static final field DEX_INTEGRITY I
 	public static final field EMULATOR I
 	public static final field ENCRYPTION I
 	public static final field HOOK I
@@ -72,7 +74,18 @@ public abstract interface class com/axguard/sdk/api/models/threats/AdbOverNetwor
 }
 
 public abstract interface class com/axguard/sdk/api/models/threats/AppIntegrityThreat : com/axguard/sdk/api/models/threats/SecurityCheckResult$ThreatDetected {
-	public abstract fun getActualFingerprints ()Ljava/util/List;
+	public abstract fun getReason ()Lcom/axguard/sdk/api/models/threats/AppIntegrityThreat$Reason;
+}
+
+public abstract interface class com/axguard/sdk/api/models/threats/AppIntegrityThreat$Reason {
+}
+
+public final class com/axguard/sdk/api/models/threats/AppIntegrityThreat$Reason$BaselineMissing : com/axguard/sdk/api/models/threats/AppIntegrityThreat$Reason {
+	public static final field INSTANCE Lcom/axguard/sdk/api/models/threats/AppIntegrityThreat$Reason$BaselineMissing;
+}
+
+public final class com/axguard/sdk/api/models/threats/AppIntegrityThreat$Reason$SignerMismatch : com/axguard/sdk/api/models/threats/AppIntegrityThreat$Reason {
+	public static final field INSTANCE Lcom/axguard/sdk/api/models/threats/AppIntegrityThreat$Reason$SignerMismatch;
 }
 
 public abstract interface class com/axguard/sdk/api/models/threats/DebuggerThreat : com/axguard/sdk/api/models/threats/SecurityCheckResult$ThreatDetected {
@@ -86,6 +99,21 @@ public abstract interface class com/axguard/sdk/api/models/threats/DebuggerThrea
 public abstract interface class com/axguard/sdk/api/models/threats/DeveloperOptionsThreat : com/axguard/sdk/api/models/threats/SecurityCheckResult$ThreatDetected {
 	public abstract fun getAdbEnabled ()Z
 	public abstract fun getDeveloperOptionsEnabled ()Z
+}
+
+public abstract interface class com/axguard/sdk/api/models/threats/DexIntegrityThreat : com/axguard/sdk/api/models/threats/SecurityCheckResult$ThreatDetected {
+	public abstract fun getReason ()Lcom/axguard/sdk/api/models/threats/DexIntegrityThreat$Reason;
+}
+
+public abstract interface class com/axguard/sdk/api/models/threats/DexIntegrityThreat$Reason {
+}
+
+public final class com/axguard/sdk/api/models/threats/DexIntegrityThreat$Reason$BaselineMissing : com/axguard/sdk/api/models/threats/DexIntegrityThreat$Reason {
+	public static final field INSTANCE Lcom/axguard/sdk/api/models/threats/DexIntegrityThreat$Reason$BaselineMissing;
+}
+
+public final class com/axguard/sdk/api/models/threats/DexIntegrityThreat$Reason$HashMismatch : com/axguard/sdk/api/models/threats/DexIntegrityThreat$Reason {
+	public static final field INSTANCE Lcom/axguard/sdk/api/models/threats/DexIntegrityThreat$Reason$HashMismatch;
 }
 
 public abstract interface class com/axguard/sdk/api/models/threats/EmulatorThreat : com/axguard/sdk/api/models/threats/SecurityCheckResult$ThreatDetected {

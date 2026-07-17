@@ -4,6 +4,7 @@ import com.axguard.sdk.api.models.threats.AdbOverNetworkThreat
 import com.axguard.sdk.api.models.threats.AppIntegrityThreat
 import com.axguard.sdk.api.models.threats.DebuggerThreat
 import com.axguard.sdk.api.models.threats.DeveloperOptionsThreat
+import com.axguard.sdk.api.models.threats.DexIntegrityThreat
 import com.axguard.sdk.api.models.threats.EmulatorThreat
 import com.axguard.sdk.api.models.threats.EncryptionThreat
 import com.axguard.sdk.api.models.threats.HookThreat
@@ -57,9 +58,8 @@ private fun SecurityCheckResult.toHeadline(): String = when (this) {
 }
 
 private fun SecurityCheckResult.toEvidence(): List<Evidence> = when (this) {
-    is AppIntegrityThreat -> actualFingerprints.mapIndexed { i, fp ->
-        Evidence(if (actualFingerprints.size == 1) "Actual signer" else "Signer ${i + 1}", fp)
-    }
+    is AppIntegrityThreat -> listOf(Evidence("Reason", reason.label()))
+    is DexIntegrityThreat -> listOf(Evidence("Reason", reason.label()))
     is AdbOverNetworkThreat -> buildList {
         tcpPort?.let { add(Evidence("ADB TCP port", it)) }
     }
@@ -135,6 +135,18 @@ private fun SecurityCheckResult.toSignals(): List<CheckSignal> = when (this) {
         CheckSignal("Proxy system property", proxySystemPropertySet),
     )
     else -> emptyList()
+}
+
+private fun AppIntegrityThreat.Reason.label(): String = when (this) {
+    AppIntegrityThreat.Reason.BaselineMissing -> "No expected fingerprint bundled in the app"
+    AppIntegrityThreat.Reason.SignerMismatch -> "Signer doesn't match the expected fingerprint"
+    else -> "Integrity verification failed"
+}
+
+private fun DexIntegrityThreat.Reason.label(): String = when (this) {
+    DexIntegrityThreat.Reason.BaselineMissing -> "No expected dex hash bundled in the app"
+    DexIntegrityThreat.Reason.HashMismatch -> "Dex files don't match the expected hash"
+    else -> "Integrity verification failed"
 }
 
 private fun VerifiedBootThreat.State.label(): String = when (this) {

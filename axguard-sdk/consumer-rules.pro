@@ -7,6 +7,9 @@
 -keepclasseswithmembernames,includedescriptorclasses class com.axguard.sdk.internal.checks.DebuggerCheck {
     native <methods>;
 }
+-keepclasseswithmembernames,includedescriptorclasses class com.axguard.sdk.internal.checks.DexIntegrityCheck {
+    native <methods>;
+}
 -keepclasseswithmembernames,includedescriptorclasses class com.axguard.sdk.internal.checks.HookCheck {
     native <methods>;
 }

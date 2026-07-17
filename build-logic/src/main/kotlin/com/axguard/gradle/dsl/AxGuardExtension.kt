@@ -23,4 +23,19 @@ abstract class AxGuardExtension {
      * SHA-256 signing-certificate fingerprint (hex, colons/whitespace optional).
      */
     abstract val certFingerprint: Property<String>
+
+    /**
+     * Enables build-time hash injection for the DEX-integrity check
+     * (`SecurityCheckId.DEX_INTEGRITY`). Defaults to the `axguard.dexIntegrity`
+     * Gradle property, else `false`.
+     *
+     * The check fails CLOSED — it reports a threat whenever it runs without an
+     * injected hash — so enable this wherever the check is in use. Relies on
+     * internal AGP artifact types: on an incompatible AGP version the hash is
+     * not injected (a warning is logged) and the check reports a threat. Not
+     * supported with dynamic feature modules. App stores must deliver the dex
+     * files byte-identical (true for Play today); verify via internal app
+     * sharing before rolling out.
+     */
+    abstract val dexIntegrity: Property<Boolean>
 }

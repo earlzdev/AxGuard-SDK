@@ -39,6 +39,7 @@ androidx-compose-material3 = { group = "androidx.compose.material3", name = "mat
 androidx-compose-material-icons-extended = { group = "androidx.compose.material", name = "material-icons-extended" }
 # AGP's public Gradle API — used (compileOnly) by the consumer-facing plugin.
 android-gradle-api = { group = "com.android.tools.build", name = "gradle-api", version.ref = "agp" }
+android-gradle = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
 vanniktech-maven-publish = { module = "com.vanniktech:gradle-maven-publish-plugin", version.ref = "mavenPublish" }
 
 [plugins]
