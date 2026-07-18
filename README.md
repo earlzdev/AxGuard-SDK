@@ -1,6 +1,6 @@
 # AxGuard SDK
 
-**On-device Android threat & tamper detection.** One call runs 13 security checks — root, hooking, debuggers, emulators, Verified Boot, signing-certificate integrity, and more.
+**On-device Android threat & tamper detection.** One call runs 14 security checks — root, hooking, debuggers, emulators, Verified Boot, signing-certificate and DEX-code integrity, and more.
 
 [![Maven Central](https://img.shields.io/maven-central/v/io.github.earlzdev/axguard-sdk)](https://central.sonatype.com/artifact/io.github.earlzdev/axguard-sdk)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue)](LICENSE)
@@ -24,6 +24,7 @@ https://github.com/user-attachments/assets/5425366f-444e-44ba-a604-d2d2b3c5a4ec
 | Emulator | `EMULATOR` | Emulator / virtualized environment |
 | Encryption | `ENCRYPTION` | At-rest storage encryption disabled |
 | App Integrity | `APP_INTEGRITY` | APK signing-certificate mismatch (repackaging) |
+| DEX Integrity | `DEX_INTEGRITY` | `classes*.dex` code tampering vs. the build-time hash |
 | ADB over network | `ADB_OVER_NETWORK` | ADB reachable over TCP/IP |
 | Developer Options | `DEVELOPER_OPTIONS` | Developer options / USB debugging enabled |
 | User CA | `USER_CA` | User-installed CA certificates (MITM risk) |
@@ -44,17 +45,20 @@ https://github.com/user-attachments/assets/5425366f-444e-44ba-a604-d2d2b3c5a4ec
 
 ## Installation
 
-Apply the Gradle plugin — it pulls in the runtime AAR for you and enables the App Integrity check by baking your signing-certificate fingerprint into the build.
+Apply the Gradle plugin — it pulls in the runtime AAR for you and powers the App Integrity and DEX Integrity checks by baking your signing-certificate fingerprint and `classes*.dex` hash into the build.
 
 ```kotlin
 // app/build.gradle.kts
 plugins {
-    id("io.github.earlzdev.axguard") version "0.1.2"
+    id("io.github.earlzdev.axguard") version "0.1.3"
 }
 
 axguard {
     // SHA-256 signing-certificate fingerprint (hex; colons/whitespace optional).
     certFingerprint.set("AA:BB:CC:…")
+
+    // Enable the DEX Integrity check: bakes the classes*.dex hash into the build.
+    dexIntegrity.set(true)
 }
 ```
 
@@ -86,6 +90,8 @@ Copy the `SHA-256` value into the `axguard { }` block, or set it as the `axguard
 
 > **Using Play App Signing?** The APK users install is re-signed with Google's key, whose private key isn't on your machine, so no keystore read gives the right value. Copy the SHA-256 from **Play Console → App integrity → App signing** and use that as `certFingerprint`.
 
+**DEX Integrity.** Setting `dexIntegrity = true` bakes the hash of the compiled `classes*.dex` into the APK, and the `DEX_INTEGRITY` check re-hashes them at runtime to catch code tampering. Both the App Integrity and DEX Integrity checks **fail closed**: they report a threat if the plugin didn't inject their baseline (fingerprint / hash), so enable them wherever the corresponding check runs. The DEX check relies on internal AGP artifacts and is not supported for dynamic-feature apps or an incompatible AGP version — verify a real install (including via Play internal app sharing) before rollout.
+
 ## Quick start
 
 `runChecks` is blocking — **call it off the main thread.**
@@ -95,7 +101,7 @@ import com.axguard.sdk.api.AxGuardSdk
 import com.axguard.sdk.api.models.SecurityCheckConfig
 
 val report = AxGuardSdk.getInstance().runChecks(
-    SecurityCheckConfig(context) // empty checkIds → run all 13 checks
+    SecurityCheckConfig(context) // empty checkIds → run all 14 checks
 )
 
 report.results.forEach { result ->
